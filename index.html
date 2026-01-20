@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>视频自动播放页</title>
+    <title>无静音自动播放视频</title>
     <style>
         body { 
             margin: 0; 
@@ -23,19 +23,6 @@
             border-radius: 8px;
             background: #000;
         }
-        .control-btn {
-            margin-top: 15px;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            background: #007bff;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .control-btn:hover {
-            background: #0056b3;
-        }
         .loading-tip {
             color: #666;
             margin: 10px 0;
@@ -45,69 +32,50 @@
 </head>
 <body>
     <div class="video-wrap">
-        <p class="loading-tip" id="tip">正在加载视频资源...</p>
-        <!-- 关键：添加autoplay（自动播放）和muted（静音）属性 -->
+        <p class="loading-tip" id="tip">正在加载视频...</p>
+        <!-- 去掉muted，保留autoplay -->
         <video 
             id="video-player"
             controls
-            autoplay  <!-- 自动播放核心属性 -->
-            muted     <!-- 静音（浏览器强制要求） -->
+            autoplay  <!-- 强制自动播放 -->
             playsinline
             type="video/mp4"
             preload="auto"
         >
             你的浏览器不支持HTML5视频，请更换Chrome/Edge浏览器。
         </video>
-        <!-- 手动取消静音按钮 -->
-        <button class="control-btn" id="unmuteBtn" style="display: none;">取消静音</button>
     </div>
 
     <script>
         const video = document.getElementById('video-player');
         const tip = document.getElementById('tip');
-        const unmuteBtn = document.getElementById('unmuteBtn');
-        // jsDelivr加速链接（确保资源稳定加载）
+        // jsDelivr加速链接，解决GitHub加载限制
         const videoUrl = 'https://cdn.jsdelivr.net/gh/luo-zhijie/Video-URL@main/123.mp4';
 
-        // 页面加载后拉取视频流并自动播放
         window.onload = async function() {
             try {
-                // 1. 拉取视频资源并转换为本地Blob链接
+                // 拉取视频并转成Blob本地链接
                 const response = await fetch(videoUrl);
-                if (!response.ok) throw new Error('视频资源加载失败');
+                if (!response.ok) throw new Error('视频加载失败');
                 const blob = await response.blob();
                 const blobUrl = URL.createObjectURL(blob);
-                
-                // 2. 赋值并触发自动播放
+
+                // 赋值后强制触发非静音播放
                 video.src = blobUrl;
-                tip.textContent = '视频已自动播放（静音）';
-                unmuteBtn.style.display = 'inline-block'; // 显示取消静音按钮
-
-                // 3. 监听播放状态，确保自动播放生效
-                video.addEventListener('play', () => {
-                    tip.textContent = '视频正在播放（静音）';
+                // 主动调用play()，无视浏览器默认限制
+                video.play().then(() => {
+                    tip.textContent = '视频已非静音自动播放';
+                }).catch(err => {
+                    // 浏览器拦截时的提示
+                    tip.textContent = '浏览器拦截自动播放 → 点击视频播放键即可出声';
+                    console.log('播放拦截提示:', err);
                 });
-
-                // 4. 取消静音按钮逻辑
-                unmuteBtn.addEventListener('click', () => {
-                    video.muted = false;
-                    tip.textContent = '视频正在播放（已取消静音）';
-                    unmuteBtn.textContent = '再次静音';
-                    // 切换静音/取消静音状态
-                    unmuteBtn.onclick = () => {
-                        video.muted = !video.muted;
-                        tip.textContent = video.muted ? '视频正在播放（静音）' : '视频正在播放（已取消静音）';
-                        unmuteBtn.textContent = video.muted ? '取消静音' : '再次静音';
-                    };
-                });
-
             } catch (err) {
                 tip.textContent = '加载失败：' + err.message;
-                console.error('加载错误:', err);
             }
         };
 
-        // 页面关闭时释放资源
+        // 页面关闭释放资源
         window.onunload = function() {
             if (video.src.startsWith('blob:')) {
                 URL.revokeObjectURL(video.src);
