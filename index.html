@@ -22,8 +22,9 @@
             height: auto;
             border-radius: 8px;
             background: #000;
+            cursor: pointer;
         }
-        .tip {
+        .loading-tip {
             color: #666;
             margin: 10px 0;
             font-size: 14px;
@@ -32,18 +33,57 @@
 </head>
 <body>
     <div class="video-wrap">
-        <p class="tip">点击视频区域开始播放</p>
-        <!-- 关键修改：preload改成none，去掉自动预加载 -->
+        <p class="loading-tip" id="tip">正在加载视频资源...</p>
+        <!-- 初始src为空，通过JS动态赋值 -->
         <video 
-            src="https://luo-zhijie.github.io/Video-URL/123.mp4"
+            id="video-player"
             controls
-            preload="none"  <!-- 不提前加载，用户点击再加载 -->
             playsinline
             type="video/mp4"
-            onclick="this.play()"  <!-- 点击视频触发播放 -->
+            preload="none"
         >
             你的浏览器不支持HTML5视频，请更换Chrome/Edge浏览器。
         </video>
     </div>
+
+    <script>
+        // 核心：用JS拉取视频流，转换成本地Blob链接
+        const video = document.getElementById('video-player');
+        const tip = document.getElementById('tip');
+        // 用jsDelivr加速链接（必选，避免跨域/限流）
+        const videoUrl = 'https://cdn.jsdelivr.net/gh/luo-zhijie/Video-URL@main/123.mp4';
+
+        // 页面加载后自动拉取视频流
+        window.onload = async function() {
+            try {
+                // 1. 拉取视频资源（绕过常规加载限制）
+                const response = await fetch(videoUrl);
+                if (!response.ok) throw new Error('视频资源加载失败');
+                
+                // 2. 转换成本地Blob流（浏览器会当作本地资源处理）
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                
+                // 3. 赋值给视频标签
+                video.src = blobUrl;
+                tip.textContent = '点击播放按钮即可播放';
+
+                // 4. 兼容手动点击播放
+                video.addEventListener('click', function() {
+                    if (video.paused) video.play().catch(err => console.log('播放触发:', err));
+                });
+            } catch (err) {
+                tip.textContent = '加载失败：' + err.message;
+                console.error('加载错误:', err);
+            }
+        };
+
+        // 页面关闭时释放Blob资源（避免内存泄漏）
+        window.onunload = function() {
+            if (video.src.startsWith('blob:')) {
+                URL.revokeObjectURL(video.src);
+            }
+        };
+    </script>
 </body>
 </html>
