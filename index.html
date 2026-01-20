@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>无静音自动播放视频</title>
+    <title>HST-video</title>
     <style>
         body { 
             margin: 0; 
@@ -64,7 +64,7 @@
                 video.src = blobUrl;
                 // 主动调用play()，无视浏览器默认限制
                 video.play().then(() => {
-                    tip.textContent = '视频已非静音自动播放';
+                    tip.textContent = '正在播放';
                 }).catch(err => {
                     // 浏览器拦截时的提示
                     tip.textContent = '浏览器拦截自动播放 → 点击视频播放键即可出声';
