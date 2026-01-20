@@ -2,36 +2,48 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 移动端适配关键 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>视频播放页</title>
     <style>
         body { 
             margin: 0; 
             padding: 20px; 
             background: #f5f5f5; 
-            min-height: 100vh; /* 防止移动端高度不足 */
+            min-height: 100vh;
+            text-align: center;
+        }
+        .video-wrap {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         video {
             width: 100%;
-            max-width: 1200px;
             height: auto;
-            display: block;
-            margin: 0 auto;
             border-radius: 8px;
-            background: #000; /* 视频加载前显示黑色背景，避免空白 */
+            background: #000;
+        }
+        .tip {
+            color: #666;
+            margin: 10px 0;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <!-- 核心修改：替换为GitHub Pages链接 + 优化播放配置 -->
-    <video 
-        src="https://luo-zhijie.github.io/Video-URL/123.mp4"  <!-- 关键：用GitHub Pages链接 -->
-        controls  <!-- 播放控件（必加） -->
-        preload="auto"  <!-- 优化加载：自动预加载视频流 -->
-        playsinline  <!-- 移动端强制内联播放，不跳全屏 -->
-        type="video/mp4"  <!-- 明确视频格式，提升兼容性 -->
-    >
-        你的浏览器不支持HTML5视频播放，请更换浏览器（如Chrome、Edge）。
-    </video>
+    <div class="video-wrap">
+        <p class="tip">点击视频区域开始播放</p>
+        <!-- 关键修改：preload改成none，去掉自动预加载 -->
+        <video 
+            src="https://luo-zhijie.github.io/Video-URL/123.mp4"
+            controls
+            preload="none"  <!-- 不提前加载，用户点击再加载 -->
+            playsinline
+            type="video/mp4"
+            onclick="this.play()"  <!-- 点击视频触发播放 -->
+        >
+            你的浏览器不支持HTML5视频，请更换Chrome/Edge浏览器。
+        </video>
+    </div>
 </body>
 </html>
