@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>视频播放页</title>
+    <style>
+        /* 让视频占满页面，自动适配屏幕 */
+        body { margin: 0; padding: 20px; background: #f5f5f5; }
+        video {
+            width: 100%;
+            max-width: 1200px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 核心：替换src为你的视频直链 -->
+    <video 
+        src="https://raw.githubusercontent.com/luo-zhijie/Video-URL/refs/heads/main/123.mp4"  <!-- 替换成第一步复制的直链 -->
+        controls  <!-- 播放控件 -->
+        autoplay muted loop  <!-- 可选：自动播放（需静音）、循环播放 -->
+        playsinline  <!-- 移动端兼容 -->
+    >
+        你的浏览器不支持视频播放，请更换浏览器。
+    </video>
+</body>
+</html>
