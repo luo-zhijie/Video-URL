@@ -2,10 +2,15 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 移动端适配关键 -->
     <title>视频播放页</title>
     <style>
-        /* 让视频占满页面，自动适配屏幕 */
-        body { margin: 0; padding: 20px; background: #f5f5f5; }
+        body { 
+            margin: 0; 
+            padding: 20px; 
+            background: #f5f5f5; 
+            min-height: 100vh; /* 防止移动端高度不足 */
+        }
         video {
             width: 100%;
             max-width: 1200px;
@@ -13,18 +18,20 @@
             display: block;
             margin: 0 auto;
             border-radius: 8px;
+            background: #000; /* 视频加载前显示黑色背景，避免空白 */
         }
     </style>
 </head>
 <body>
-    <!-- 核心：替换src为你的视频直链 -->
+    <!-- 核心修改：替换为GitHub Pages链接 + 优化播放配置 -->
     <video 
-        src="https://raw.githubusercontent.com/luo-zhijie/Video-URL/refs/heads/main/123.mp4"  <!-- 替换成第一步复制的直链 -->
-        controls  <!-- 播放控件 -->
-        autoplay muted loop  <!-- 可选：自动播放（需静音）、循环播放 -->
-        playsinline  <!-- 移动端兼容 -->
+        src="https://luo-zhijie.github.io/Video-URL/123.mp4"  <!-- 关键：用GitHub Pages链接 -->
+        controls  <!-- 播放控件（必加） -->
+        preload="auto"  <!-- 优化加载：自动预加载视频流 -->
+        playsinline  <!-- 移动端强制内联播放，不跳全屏 -->
+        type="video/mp4"  <!-- 明确视频格式，提升兼容性 -->
     >
-        你的浏览器不支持视频播放，请更换浏览器。
+        你的浏览器不支持HTML5视频播放，请更换浏览器（如Chrome、Edge）。
     </video>
 </body>
 </html>
